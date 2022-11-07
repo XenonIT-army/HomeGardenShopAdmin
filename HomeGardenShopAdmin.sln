@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.3.32819.101
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeGardenShopAdmin", "HomeGardenShopAdmin\HomeGardenShopAdmin.csproj", "{676149E4-A801-4B46-90CC-D8EAF1D08666}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HomeGardenShopDAL", "HomeGardenShopDAL\HomeGardenShopDAL.csproj", "{B63F2E2C-4CE3-44F7-A482-F18611B34657}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{676149E4-A801-4B46-90CC-D8EAF1D08666}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{676149E4-A801-4B46-90CC-D8EAF1D08666}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{676149E4-A801-4B46-90CC-D8EAF1D08666}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{676149E4-A801-4B46-90CC-D8EAF1D08666}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B63F2E2C-4CE3-44F7-A482-F18611B34657}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B63F2E2C-4CE3-44F7-A482-F18611B34657}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B63F2E2C-4CE3-44F7-A482-F18611B34657}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B63F2E2C-4CE3-44F7-A482-F18611B34657}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {1969A7C3-ADCA-4DED-8D8E-7BBA0B1E5461}
+	EndGlobalSection
+EndGlobal

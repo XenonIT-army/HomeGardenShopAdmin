@@ -19,7 +19,7 @@ namespace HomeGardenShopDAL.Context
 
         static string connectionString2 = "data source=TESTSERVER,1433;initial catalog=HomeGardenDB; integrated security=True; MultipleActiveResultSets=True;App=EntityFramework";
         public ShopContext()
-            : base(connectionString1)
+            : base(connectionString2)
         {
         }
        

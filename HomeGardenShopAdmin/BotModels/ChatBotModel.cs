@@ -7,6 +7,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Data.Entity.Validation;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -76,7 +77,7 @@ namespace HomeGardenShopAdmin.BotModels
             if (update.Type == UpdateType.ChannelPost)
             {
                 chatId = update.ChannelPost.Chat.Id;
-                var messageText = update.ChannelPost.Text;
+                var messageText = update.ChannelPost.Text; 
                 //List<string[]> list = new List<string[]>();
                 //string[] button = { "first", "second", "thrird" };
                 //string[] button2 = { "i", "am", "maks" };
@@ -105,7 +106,7 @@ namespace HomeGardenShopAdmin.BotModels
                 chatId = update.Message.Chat.Id;
                 var messageText = update.Message.Text;
                 var caption = update.Message.Caption;
-                Console.WriteLine($"Received a '{messageText}' message in chat {chatId}.");
+                //Console.WriteLine($"Received a '{messageText}' message in chat {chatId}.");
                 if(messageText !=null)
                 {
                     GetMessage(messageText, botClient, cancellationToken);
@@ -187,172 +188,195 @@ namespace HomeGardenShopAdmin.BotModels
         {
             if (messageText.ToLower().Contains("start"))
             {
-                await BotSendModel.SendTextAsync(botClient, chatId, cancellationToken, $"Привет я бот админ магазина Макса, через меня ты можешь создавать новые продукты и категории к ним и много другого!🧙‍♀️");
+                await BotSendModel.SendTextAsync(botClient, chatId, cancellationToken, $"Input Admin password🧙‍♀️");
 
-                var res = await BotSendModel.SendTextWithReplyKeyboardButtonAsync(botClient, chatId, cancellationToken, "Выбери категорию😌", ReplyKeyboardChat.GetReplyKeyboardMarkupAsync(ReplyKeyboardChat.GetKeyboardMyltiButtonAsync(botRequest.StartButtons())));
+                //var res = await BotSendModel.SendTextWithReplyKeyboardButtonAsync(botClient, chatId, cancellationToken, "Input admin password", ReplyKeyboardChat.GetReplyKeyboardMarkupAsync(ReplyKeyboardChat.GetKeyboardMyltiButtonAsync(botRequest.StartButtons())));
             }
-            else if (messageText == "1.Новости")
+            else if(messageText == "admin123")
             {
-                await BotSendModel.SendTextAsync(botClient, chatId, cancellationToken, $"Ты выбрал категорию: Новости! 🤔");
+                AppInfo.Admin = chatId;
+                await BotSendModel.SendTextAsync(botClient, chatId, cancellationToken, $"Hi Admin!✌️");
 
-                var res = await BotSendModel.SendTextWithReplyKeyboardButtonAsync(botClient, chatId, cancellationToken, "Что нужно сделать?🫣", ReplyKeyboardChat.GetReplyKeyboardMarkupAsync(ReplyKeyboardChat.GetKeyboardMyltiButtonAsync(botRequest.GetNewsButtons())));
-
-
-            }
-            else if (messageText == "2.Продукты")
-            {
-                await BotSendModel.SendTextAsync(botClient, chatId, cancellationToken, $"Ты выбрал категорию: Продукты! 🤔");
-
-                var res = await BotSendModel.SendTextWithReplyKeyboardButtonAsync(botClient, chatId, cancellationToken, "Что нужно сделать?🫣", ReplyKeyboardChat.GetReplyKeyboardMarkupAsync(ReplyKeyboardChat.GetKeyboardMyltiButtonAsync(botRequest.GetProductsButtons())));
-
+                var res = await BotSendModel.SendTextWithReplyKeyboardButtonAsync(botClient, chatId, cancellationToken, "Select language", ReplyKeyboardChat.GetReplyKeyboardMarkupAsync(ReplyKeyboardChat.GetKeyboardButtonAsync(botRequest.LanguageButtons())));
 
             }
-            else if (messageText == "3.Категории")
+           
+            else  if (AppInfo.Admin == chatId)
             {
-                await BotSendModel.SendTextAsync(botClient, chatId, cancellationToken, $"Ты выбрал категорию: Категории товаров! 🤔");
+                if (AppInfo.CurrentUICulture !=null)
+                {
+                    CultureInfo.CurrentUICulture = AppInfo.CurrentUICulture;
+                }
 
-                var res = await BotSendModel.SendTextWithReplyKeyboardButtonAsync(botClient, chatId, cancellationToken, "Что нужно сделать?🫣", ReplyKeyboardChat.GetReplyKeyboardMarkupAsync(ReplyKeyboardChat.GetKeyboardMyltiButtonAsync(botRequest.GetCategorysButtons())));
+                if (messageText == "ru-RU" || messageText == "uk-UA" || messageText == "en-US")
+            {
+                    CultureInfo newCulture = new CultureInfo(messageText);
+                    AppInfo.CurrentUICulture = newCulture;
+                    CultureInfo.CurrentUICulture = AppInfo.CurrentUICulture;
+                    await BotSendModel.SendTextAsync(botClient, chatId, cancellationToken, $"{Properties.Resource.String1}🧙‍♀️");
+
+                var res = await BotSendModel.SendTextWithReplyKeyboardButtonAsync(botClient, chatId, cancellationToken, $"{Properties.Resource.String2}😌", ReplyKeyboardChat.GetReplyKeyboardMarkupAsync(ReplyKeyboardChat.GetKeyboardMyltiButtonAsync(botRequest.StartButtons())));
+            }
+            else if (messageText == $"1.{Properties.Resource.String32}")
+            {
+                await BotSendModel.SendTextAsync(botClient, chatId, cancellationToken, $"{Properties.Resource.String3} 🤔");
+                    var res = await BotSendModel.SendTextWithReplyKeyboardButtonAsync(botClient, chatId, cancellationToken, $"{Properties.Resource.String4}🫣", ReplyKeyboardChat.GetReplyKeyboardMarkupAsync(ReplyKeyboardChat.GetKeyboardMyltiButtonAsync(botRequest.GetNewsButtons())));
+
+            }
+            else if (messageText == $"2.{Properties.Resource.String33}")
+            {
+                await BotSendModel.SendTextAsync(botClient, chatId, cancellationToken, $"{Properties.Resource.String6} 🤔");
+
+                var res = await BotSendModel.SendTextWithReplyKeyboardButtonAsync(botClient, chatId, cancellationToken, $"{Properties.Resource.String4}🫣", ReplyKeyboardChat.GetReplyKeyboardMarkupAsync(ReplyKeyboardChat.GetKeyboardMyltiButtonAsync(botRequest.GetProductsButtons())));
 
 
             }
-            else if (messageText == "4.Заказы")
+            else if (messageText == $"3.{Properties.Resource.String34}")
             {
-                await BotSendModel.SendTextAsync(botClient, chatId, cancellationToken, $"Ты выбрал категорию: Заказы! 🤔");
-                await BotSendModel.SendTextAsync(botClient, chatId, cancellationToken, $"К сожалению данная категория пока не доступна! 😰");
+                await BotSendModel.SendTextAsync(botClient, chatId, cancellationToken, $"{Properties.Resource.String4} 🤔");
+
+                var res = await BotSendModel.SendTextWithReplyKeyboardButtonAsync(botClient, chatId, cancellationToken, $"{Properties.Resource.String4}🫣", ReplyKeyboardChat.GetReplyKeyboardMarkupAsync(ReplyKeyboardChat.GetKeyboardMyltiButtonAsync(botRequest.GetCategorysButtons())));
+
+
+            }
+            else if (messageText == $"4.{Properties.Resource.String35}")
+            {
+                await BotSendModel.SendTextAsync(botClient, chatId, cancellationToken, $"{Properties.Resource.String7} 🤔");
+                await BotSendModel.SendTextAsync(botClient, chatId, cancellationToken, $"{Properties.Resource.String8} 😰");
                 // var res = await BotSendModel.SendTextWithReplyKeyboardButtonAsync(botClient, chatId, cancellationToken, "Что нужно сделать?🫣", ReplyKeyboardChat.GetReplyKeyboardMarkupAsync(ReplyKeyboardChat.GetKeyboardMyltiButtonAsync(botRequest.GetNewsButtons())));
 
 
             }
-            else if (messageText == "5.О нас")
+            else if (messageText == $"5.{Properties.Resource.String36}")
             {
-                await BotSendModel.SendTextAsync(botClient, chatId, cancellationToken, $"Ты выбрал категорию: О нас! 🤔");
+                await BotSendModel.SendTextAsync(botClient, chatId, cancellationToken, $"{Properties.Resource.String9} 🤔");
 
-                var res = await BotSendModel.SendTextWithReplyKeyboardButtonAsync(botClient, chatId, cancellationToken, "Что нужно сделать?🫣", ReplyKeyboardChat.GetReplyKeyboardMarkupAsync(ReplyKeyboardChat.GetKeyboardMyltiButtonAsync(botRequest.GetAboutUsButtons())));
+                var res = await BotSendModel.SendTextWithReplyKeyboardButtonAsync(botClient, chatId, cancellationToken, $"{Properties.Resource.String4}🫣", ReplyKeyboardChat.GetReplyKeyboardMarkupAsync(ReplyKeyboardChat.GetKeyboardMyltiButtonAsync(botRequest.GetAboutUsButtons())));
 
 
             }
            
-            else if (messageText == "7.Показать все")
+            else if (messageText == $"7.{Properties.Resource.String38}")
             {
                 BotCommandsModel.GetAllNewsCommand(kernel, chatId, botClient, cancellationToken);
 
             }
-            else if (messageText == "8.Найти")
+            else if (messageText == $"8.{Properties.Resource.String39}")
             {
-                await BotSendModel.SendTextAsync(botClient, chatId, cancellationToken, $"Чтобы найти новость укажи тег get news id новости");
+                await BotSendModel.SendTextAsync(botClient, chatId, cancellationToken, $"{Properties.Resource.String10}");
             }
-            else if (messageText == "9.Создать")
+            else if (messageText == $"9.{Properties.Resource.String40}")
             {
-                await BotSendModel.SendTextAsync(botClient, chatId, cancellationToken, $"Новости могут быть двух типов: с картинкой и без.\nЧто бы создать новость с картинкой выбери фото из галереи и сделай к нему подпись.\nДля новости без картинки можно использовать просто сообщение.\nВ тексте обязательно укажи теги create news nameRU:...;nameUA:...;nameEN:...;descRU:...;descUA:...;descEN:...; это название и описание новости. Можно указать  по одному тегу названия и описания тогда текст продублируется на остальные языки.😉");
+                await BotSendModel.SendTextAsync(botClient, chatId, cancellationToken, $"{Properties.Resource.String11}😉");
             }
-            else if (messageText == "10.Удалить")
+            else if (messageText == $"10.{Properties.Resource.String41}")
             {
-                await BotSendModel.SendTextAsync(botClient, chatId, cancellationToken, $"Чтобы удалить новость укажи тег remove news и id новости.😉");
+                await BotSendModel.SendTextAsync(botClient, chatId, cancellationToken, $"{Properties.Resource.String12}😉");
             }
-            else if (messageText == "11.Изменить")
+            else if (messageText == $"11.{Properties.Resource.String42}")
             {
-                await BotSendModel.SendTextAsync(botClient, chatId, cancellationToken, $"Чтобы редактировать новость укажи тег edit news id новости и любое поле например: nameRU:...;😉");
+                await BotSendModel.SendTextAsync(botClient, chatId, cancellationToken, $"{Properties.Resource.String13}😉");
             }
-            else if (messageText == "12.Назад")
+            else if (messageText == $"12.{Properties.Resource.String43}")
             {
-                var res = await BotSendModel.SendTextWithReplyKeyboardButtonAsync(botClient, chatId, cancellationToken, "Выбери категорию😌", ReplyKeyboardChat.GetReplyKeyboardMarkupAsync(ReplyKeyboardChat.GetKeyboardMyltiButtonAsync(botRequest.StartButtons())));
+                var res = await BotSendModel.SendTextWithReplyKeyboardButtonAsync(botClient, chatId, cancellationToken, $"{Properties.Resource.String2}😌", ReplyKeyboardChat.GetReplyKeyboardMarkupAsync(ReplyKeyboardChat.GetKeyboardMyltiButtonAsync(botRequest.StartButtons())));
             }
-            else if (messageText == "13.Показать все")
+            else if (messageText == $"13.{Properties.Resource.String38}")
             {
                 BotCommandsModel.GetAllProductCommand(kernel, chatId, botClient, cancellationToken);
             }
-            else if (messageText == "14.Найти")
+            else if (messageText == $"14.{Properties.Resource.String39}")
             {
-                var res = await BotSendModel.SendTextWithReplyKeyboardButtonAsync(botClient, chatId, cancellationToken, "Выбери фильтр поиска продукта!😊", ReplyKeyboardChat.GetReplyKeyboardMarkupAsync(ReplyKeyboardChat.GetKeyboardMyltiButtonAsync(botRequest.GetProductsFilterButtons())));
+                var res = await BotSendModel.SendTextWithReplyKeyboardButtonAsync(botClient, chatId, cancellationToken, $"{Properties.Resource.String14}😊", ReplyKeyboardChat.GetReplyKeyboardMarkupAsync(ReplyKeyboardChat.GetKeyboardMyltiButtonAsync(botRequest.GetProductsFilterButtons())));
 
             }
-            else if (messageText == "14.1.Категория")
+            else if (messageText == $"14.1.{Properties.Resource.String45}")
             {
-                await BotSendModel.SendTextAsync(botClient, chatId, cancellationToken, $"Что бы найти продукт по категории укажи теги get prod category id категории.😉");
+                await BotSendModel.SendTextAsync(botClient, chatId, cancellationToken, $"{Properties.Resource.String15}😉");
             }
-            else if (messageText == "14.2.Название")
+            else if (messageText == $"14.2.{Properties.Resource.String46}")
             {
-                await BotSendModel.SendTextAsync(botClient, chatId, cancellationToken, $"Что бы найти продукт по названию укажи теги get prod name... ключевые слова для поиска.😉");
+                await BotSendModel.SendTextAsync(botClient, chatId, cancellationToken, $"{Properties.Resource.String16}😉");
             }
-            else if (messageText == "14.3.Цена")
+            else if (messageText == $"14.3.{Properties.Resource.String47}")
             {
-                await BotSendModel.SendTextAsync(botClient, chatId, cancellationToken, $"Что бы найти продукт по цене укажи теги get prod price ... диапазон цен, например 100 - 300.😉");
+                await BotSendModel.SendTextAsync(botClient, chatId, cancellationToken, $"{Properties.Resource.String17}😉");
             }
-            else if (messageText == "14.4.Id")
+            else if (messageText == $"14.4.Id")
             {
-                await BotSendModel.SendTextAsync(botClient, chatId, cancellationToken, $"Что бы найти продукт по категории укажи теги get prod id продукта.😉");
+                await BotSendModel.SendTextAsync(botClient, chatId, cancellationToken, $"{Properties.Resource.String18}😉");
             }
-            else if (messageText == "14.5.Назад")
+            else if (messageText == $"14.5.{Properties.Resource.String43}")
             {
-                var res = await BotSendModel.SendTextWithReplyKeyboardButtonAsync(botClient, chatId, cancellationToken, "Выбери категорию😌", ReplyKeyboardChat.GetReplyKeyboardMarkupAsync(ReplyKeyboardChat.GetKeyboardMyltiButtonAsync(botRequest.GetProductsButtons())));
+                var res = await BotSendModel.SendTextWithReplyKeyboardButtonAsync(botClient, chatId, cancellationToken, $"{Properties.Resource.String2}😌", ReplyKeyboardChat.GetReplyKeyboardMarkupAsync(ReplyKeyboardChat.GetKeyboardMyltiButtonAsync(botRequest.GetProductsButtons())));
             }
-            else if (messageText == "15.Создать")
+            else if (messageText == $"15.{Properties.Resource.String40}")
             {
-                await BotSendModel.SendTextAsync(botClient, chatId, cancellationToken, $"Что бы создать продукт выбери фото из галереи и сделай к нему подпись.\nВ тексте обязательно укажи теги create prod nameRU:...;nameUA:...;nameEN:...;descRU:...;descUA:...;descEN:...;count:...;categoryId:...;price:...;discountPrice:...; Можно указать  по одному тегу названия и описания тогда текст продублируется на остальные языки.😉");
+                await BotSendModel.SendTextAsync(botClient, chatId, cancellationToken, $"{Properties.Resource.String19}😉");
             }
-            else if (messageText == "16.Удалить")
+            else if (messageText == $"16.{Properties.Resource.String41}")
             {
-                await BotSendModel.SendTextAsync(botClient, chatId, cancellationToken, $"Чтобы удалить продукт укажи тег remove prod и id.😉");
+                await BotSendModel.SendTextAsync(botClient, chatId, cancellationToken, $"{Properties.Resource.String20}😉");
             }
-            else if (messageText == "17.Изменить")
+            else if (messageText == $"17.{Properties.Resource.String42}")
             {
-                await BotSendModel.SendTextAsync(botClient, chatId, cancellationToken, $"Чтобы редактировать продукт укажи тег edit prod id продукта и любое поле например: nameRU:...;price:...;😉");
+                await BotSendModel.SendTextAsync(botClient, chatId, cancellationToken, $"{Properties.Resource.String21}😉");
             }
-            else if (messageText == "18.Назад")
+            else if (messageText == $"18.{Properties.Resource.String43}")
             {
-                var res = await BotSendModel.SendTextWithReplyKeyboardButtonAsync(botClient, chatId, cancellationToken, "Выбери категорию😌", ReplyKeyboardChat.GetReplyKeyboardMarkupAsync(ReplyKeyboardChat.GetKeyboardMyltiButtonAsync(botRequest.StartButtons())));
+                var res = await BotSendModel.SendTextWithReplyKeyboardButtonAsync(botClient, chatId, cancellationToken, $"{Properties.Resource.String2}😌", ReplyKeyboardChat.GetReplyKeyboardMarkupAsync(ReplyKeyboardChat.GetKeyboardMyltiButtonAsync(botRequest.StartButtons())));
             }
 
-            else if (messageText == "19.Показать все")
+            else if (messageText == $"19.{Properties.Resource.String38}")
             {
 
                 BotCommandsModel.GetAllCategoryCommand(kernel, chatId, botClient, cancellationToken);
               
             }
-            else if (messageText == "20.Найти")
+            else if (messageText == $"20.{Properties.Resource.String39}")
             {
-                await BotSendModel.SendTextAsync(botClient, chatId, cancellationToken, $"Чтобы найти категорию укажи тег get category id новости");
+                await BotSendModel.SendTextAsync(botClient, chatId, cancellationToken, $"{Properties.Resource.String22}😉");
             }
-            else if (messageText == "21.Создать")
+            else if (messageText == $"21.{Properties.Resource.String40}")
             {
-                await BotSendModel.SendTextAsync(botClient, chatId, cancellationToken, $"Что бы создать категорию укажи теги create category nameRU:...;nameUA:...;nameEN:...; Можно указать один тег названия тогда текст продублируется на остальные языки.😉");
+                await BotSendModel.SendTextAsync(botClient, chatId, cancellationToken, $"{Properties.Resource.String23}😉");
             }
-            else if (messageText == "22.Удалить")
+            else if (messageText == $"22.{Properties.Resource.String41}")
             {
-                await BotSendModel.SendTextAsync(botClient, chatId, cancellationToken, $"Чтобы удалить категорию укажи тег remove category и id категории. Важно: при удалении категории все товары данной категории так же удаляются!😉");
+                await BotSendModel.SendTextAsync(botClient, chatId, cancellationToken, $"{Properties.Resource.String24}😉");
             }
-            else if (messageText == "23.Изменить")
+            else if (messageText == $"23.{Properties.Resource.String42}")
             {
-                await BotSendModel.SendTextAsync(botClient, chatId, cancellationToken, $"Чтобы редактировать категорию укажи тег edit category id категории и любое поле например: nameRU:...;😉");
+                await BotSendModel.SendTextAsync(botClient, chatId, cancellationToken, $"{Properties.Resource.String25}😉");
             }
-            else if (messageText == "24.Назад")
+            else if (messageText == $"24.{Properties.Resource.String43}")
             {
-               await BotSendModel.SendTextWithReplyKeyboardButtonAsync(botClient, chatId, cancellationToken, "Выбери категорию😌", ReplyKeyboardChat.GetReplyKeyboardMarkupAsync(ReplyKeyboardChat.GetKeyboardMyltiButtonAsync(botRequest.StartButtons())));
+               await BotSendModel.SendTextWithReplyKeyboardButtonAsync(botClient, chatId, cancellationToken, $"{Properties.Resource.String2}😌", ReplyKeyboardChat.GetReplyKeyboardMarkupAsync(ReplyKeyboardChat.GetKeyboardMyltiButtonAsync(botRequest.StartButtons())));
             }
 
 
-            else if (messageText == "25.Показать")
+            else if (messageText == $"25.{Properties.Resource.String44}")
             {
 
                 BotCommandsModel.GetAboutUsCommand(kernel, chatId, botClient, cancellationToken);
 
             }
-            else if (messageText == "26.Создать")
+            else if (messageText == $"26.{Properties.Resource.String40}")
             {
-                await BotSendModel.SendTextAsync(botClient, chatId, cancellationToken, $"Важно: при создании категории о нас, прошлая категория о нас удалиться!😉");
-                await BotSendModel.SendTextAsync(botClient, chatId, cancellationToken, $"Что бы создать категорию о нас укажи теги create aboutUs nameCompany:...;descriptionRU:...;descriptionUA:...;descriptionEN:...; Можно указать один тег описания тогда текст продублируется на остальные языки.😉");
+                await BotSendModel.SendTextAsync(botClient, chatId, cancellationToken, $"{Properties.Resource.String26}😉");
+                await BotSendModel.SendTextAsync(botClient, chatId, cancellationToken, $"{Properties.Resource.String27}😉");
             }
-            else if (messageText == "27.Удалить")
+            else if (messageText == $"27.{Properties.Resource.String41}")
             {
-                await BotSendModel.SendTextAsync(botClient, chatId, cancellationToken, $"Чтобы удалить категорию о нас укажи тег remove aboutUs.😉");
+                await BotSendModel.SendTextAsync(botClient, chatId, cancellationToken, $"{Properties.Resource.String28}😉");
             }
-            else if (messageText == "28.Изменить")
+            else if (messageText == $"28.{Properties.Resource.String42}")
             {
-                await BotSendModel.SendTextAsync(botClient, chatId, cancellationToken, $"Чтобы редактировать категорию о нас укажи тег edit aboutUs и любое поле например: nameCompany:...;😉");
+                await BotSendModel.SendTextAsync(botClient, chatId, cancellationToken, $"{Properties.Resource.String29}😉");
             }
-            else if (messageText == "29.Назад")
+            else if (messageText == $"29.{Properties.Resource.String43}")
             {
-                await BotSendModel.SendTextWithReplyKeyboardButtonAsync(botClient, chatId, cancellationToken, "Выбери категорию😌", ReplyKeyboardChat.GetReplyKeyboardMarkupAsync(ReplyKeyboardChat.GetKeyboardMyltiButtonAsync(botRequest.StartButtons())));
+                await BotSendModel.SendTextWithReplyKeyboardButtonAsync(botClient, chatId, cancellationToken, $"{Properties.Resource.String2}😌", ReplyKeyboardChat.GetReplyKeyboardMarkupAsync(ReplyKeyboardChat.GetKeyboardMyltiButtonAsync(botRequest.StartButtons())));
             }
 
 
@@ -435,11 +459,16 @@ namespace HomeGardenShopAdmin.BotModels
 
             else if (messageText.ToLower().ToLower() == "exit" || messageText == "6.Выйти")
             {
-                await BotSendModel.RemoveButtonsAsync(botClient, chatId, cancellationToken, "Чат закрыт, что бы начать заново напиши start. Буду тебя ждать!🥺");
+                await BotSendModel.RemoveButtonsAsync(botClient, chatId, cancellationToken, $"{Properties.Resource.String30}🥺");
             }
             else
             {
-                await BotSendModel.SendTextAsync(botClient, chatId, cancellationToken, $"Данная команда не найдена;😢");
+                await BotSendModel.SendTextAsync(botClient, chatId, cancellationToken, $"{Properties.Resource.String31}😢");
+            }
+            }
+            else
+            {
+                await BotSendModel.SendTextAsync(botClient, chatId, cancellationToken, $"Incorrect password😔");
             }
         }
         public static async void GetCaption(string caption, ITelegramBotClient botClient, CancellationToken cancellationToken,PhotoSize photo)

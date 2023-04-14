@@ -151,7 +151,7 @@ namespace HomeGardenShopAdmin.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to To create a product, select a photo from the gallery and make a caption for it.\nIn the text, be sure to include the tags create prod nameRU:...;nameUA:...;nameEN:...;descRU:...;descUA:.. .;descEN:...;count:...;categoryId:...;price:...;discountPrice:...; You can specify one title and description tag each, then the text will be duplicated in other languages..
+        ///   Looks up a localized string similar to To create a product, select a photo from the gallery and make a caption for it.\nIn the text, be sure to include the tags create prod nameRU:...;nameUA:...;nameEN:...;descRU:...;descUA:...;descEN:...;prodcount:...;categoryId:...;prodprice:...;proddiscount:...; You can specify one title and description tag each, then the text will be duplicated in other languages..
         /// </summary>
         internal static string String19 {
             get {

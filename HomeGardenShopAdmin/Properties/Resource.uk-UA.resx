@@ -148,7 +148,7 @@
     <value>Щоб знайти продукт за категорією вкажи теги get prod id продукту.</value>
   </data>
   <data name="String19" xml:space="preserve">
-    <value>Щоб створити продукт, вибери фото з галереї і зроби до нього підпис.\nУ тексті обов'язково вкажи теги create prod nameRU:...;nameUA:...;nameEN:...;descRU:...;descUA:.. .;descEN:...;count:...;categoryId:...;price:...;discountPrice:...; Можна вказати по одному тегу назви та опису, тоді текст продублюється на інші мови.</value>
+    <value>Щоб створити продукт, вибери фото з галереї і зроби до нього підпис.\nУ тексті обов'язково вкажи теги create prod nameRU:...;nameUA:...;nameEN:...;descRU:...;descUA:...;descEN:...;prodcount:...;categoryId:...;prodprice:...;proddiscount:...; Можна вказати по одному тегу назви та опису, тоді текст продублюється на інші мови.</value>
   </data>
   <data name="String2" xml:space="preserve">
     <value>Вибери категорію</value>

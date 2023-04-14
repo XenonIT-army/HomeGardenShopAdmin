@@ -148,7 +148,7 @@
     <value>To find a product by category, specify the get prod id tags for the product.</value>
   </data>
   <data name="String19" xml:space="preserve">
-    <value>To create a product, select a photo from the gallery and make a caption for it.\nIn the text, be sure to include the tags create prod nameRU:...;nameUA:...;nameEN:...;descRU:...;descUA:.. .;descEN:...;count:...;categoryId:...;price:...;discountPrice:...; You can specify one title and description tag each, then the text will be duplicated in other languages.</value>
+    <value>To create a product, select a photo from the gallery and make a caption for it.\nIn the text, be sure to include the tags create prod nameRU:...;nameUA:...;nameEN:...;descRU:...;descUA:...;descEN:...;prodcount:...;categoryId:...;prodprice:...;proddiscount:...; You can specify one title and description tag each, then the text will be duplicated in other languages.</value>
   </data>
   <data name="String2" xml:space="preserve">
     <value>Choose a category</value>

@@ -236,25 +236,33 @@ namespace HomeGardenShopAdmin.BotModels
         public static async void GetAllNewsCommand(IKernel kernel, ChatId chatId, ITelegramBotClient botClient, CancellationToken cancellationTokene)
         {
             IService<News> newsService = kernel.Get<IService<News>>();
-            var list = await newsService.GetAll();
-            if (list != null && list.Count() > 0)
+            try
             {
-                foreach (var item in list)
+                var list = await newsService.GetAll();
+                if (list != null && list.Count() > 0)
                 {
-                    if (item.Image != null && item.Image.Length > 0)
+                    foreach (var item in list)
                     {
-                        await BotSendModel.SendPhotoWithTextAsync(botClient, chatId, cancellationTokene, $"Id: {item.Id}\nnameRU: {item.Name}\nnameUA: {item.NameUA}\nnameEN: {item.NameEN}\ndescRU: {item.Description}\ndescUA: {item.DescriptionUA}\ndescEN: {item.DescriptionEN}\nКартинка:", item.Image);
-                    }
-                    else
-                    {
-                        await BotSendModel.SendTextAsync(botClient, chatId, cancellationTokene, $"Id: {item.Id}\nnameRU: {item.Name}\nnameUA: {item.NameUA}\nnameEN: {item.NameEN}\ndescRU: {item.Description}\ndescUA: {item.DescriptionUA}\ndescEN: {item.DescriptionEN}\nКартинка: нет");
+                        if (item.Image != null && item.Image.Length > 0)
+                        {
+                            await BotSendModel.SendPhotoWithTextAsync(botClient, chatId, cancellationTokene, $"Id: {item.Id}\nnameRU: {item.Name}\nnameUA: {item.NameUA}\nnameEN: {item.NameEN}\ndescRU: {item.Description}\ndescUA: {item.DescriptionUA}\ndescEN: {item.DescriptionEN}\nКартинка:", item.Image);
+                        }
+                        else
+                        {
+                            await BotSendModel.SendTextAsync(botClient, chatId, cancellationTokene, $"Id: {item.Id}\nnameRU: {item.Name}\nnameUA: {item.NameUA}\nnameEN: {item.NameEN}\ndescRU: {item.Description}\ndescUA: {item.DescriptionUA}\ndescEN: {item.DescriptionEN}\nКартинка: нет");
+                        }
                     }
                 }
+                else
+                {
+                    await BotSendModel.SendTextAsync(botClient, chatId, cancellationTokene, $"Список новостей пуст!😢");
+                }
             }
-            else
+            catch(Exception ex)
             {
-                await BotSendModel.SendTextAsync(botClient, chatId, cancellationTokene, $"Список новостей пуст!😢");
+
             }
+           
         }
 
 
@@ -271,9 +279,9 @@ namespace HomeGardenShopAdmin.BotModels
                 string? descRes = messageText.Split(';').FirstOrDefault(x => x.Contains("descRU"));
                 string? descResUA = messageText.Split(';').FirstOrDefault(x => x.Contains("descUA"));
                 string? descResEN = messageText.Split(';').FirstOrDefault(x => x.Contains("descEN"));
-                string? priceRes = messageText.Split(';').FirstOrDefault(x => x.Contains("price"));
-                string? countRes = messageText.Split(';').FirstOrDefault(x => x.Contains("count"));
-                string? discountPriceRes = messageText.Split(';').FirstOrDefault(x => x.Contains("discountPrice"));
+                string? priceRes = messageText.Split(';').FirstOrDefault(x => x.Contains("prodprice"));
+                string? countRes = messageText.Split(';').FirstOrDefault(x => x.Contains("prodcount"));
+                string? discountPriceRes = messageText.Split(';').FirstOrDefault(x => x.Contains("proddiscount"));
                 string? categoryIdRes = messageText.Split(';').FirstOrDefault(x => x.Contains("categoryId"));
                 if (nameRes != null)
                 {
@@ -341,12 +349,12 @@ namespace HomeGardenShopAdmin.BotModels
 
                 if (priceRes != null)
                 {
-                    string price = priceRes.Split("price:").Last();
+                    string price = priceRes.Split("prodprice:").Last();
                     prod.Price = Convert.ToDouble(price); 
                 }
                 if (discountPriceRes != null)
                 {
-                    string discountPrice = discountPriceRes.Split("discountPrice:").Last();
+                    string discountPrice = discountPriceRes.Split("proddiscount:").Last();
                     prod.DiscountPrice = Convert.ToDouble(discountPrice);
                 }
                 if (countRes != null)
@@ -385,31 +393,39 @@ namespace HomeGardenShopAdmin.BotModels
         {
             IService<Product> products = kernel.Get<IService<Product>>();
             IService<Category> categorys = kernel.Get<IService<Category>>();
-            var list = await products.GetAll();
-            var categoryList = await categorys.GetAll();
-            if (list != null && list.Count() > 0)
+            try
             {
-                foreach (var item in list)
+                var list = await products.GetAll();
+                var categoryList = await categorys.GetAll();
+                if (list != null && list.Count() > 0)
                 {
-                    var category = categoryList.Where(x => x.Id == item.CategoryId).FirstOrDefault();
-                    string name = "";
-                    if (category != null)
+                    foreach (var item in list)
                     {
-                        name = category.Name;
-                    }
-                    if (item.Image != null && item.Image.Length > 0)
-                    {
-                        await BotSendModel.SendPhotoWithTextAsync(botClient, chatId, cancellationToken, $"Id: {item.Id}\nnameRU: {item.Name}\nnameUA: {item.NameUA}\nnameEN: {item.NameEN}\ndescRU: {item.Description}\ndescUA: {item.DescriptionUA}\ndescEN: {item.DescriptionEN}\ncount: {item.Count}\nprice: {item.Price}\ndiscountPrice: {item.DiscountPrice}\ncategory: {name}\n", item.Image);
-                    }
-                    else
-                    {
-                        await BotSendModel.SendTextAsync(botClient, chatId, cancellationToken, $"Id: {item.Id}\nnameRU: {item.Name}\nnameUA: {item.NameUA}\nnameEN: {item.NameEN}\ndescRU: {item.Description}\ndescUA: {item.DescriptionUA}\ndescEN: {item.DescriptionEN}\ncount: {item.Count}\nprice: {item.Price}\ndiscountPrice: {item.DiscountPrice}\ncategory: {name}\n");
+                        var category = categoryList.Where(x => x.Id == item.CategoryId).FirstOrDefault();
+                        string name = "";
+                        if (category != null)
+                        {
+                            name = category.Name;
+                        }
+                        if (item.Image != null && item.Image.Length > 0)
+                        {
+                            await BotSendModel.SendPhotoWithTextAsync(botClient, chatId, cancellationToken, $"Id: {item.Id}\nnameRU: {item.Name}\nnameUA: {item.NameUA}\nnameEN: {item.NameEN}\ndescRU: {item.Description}\ndescUA: {item.DescriptionUA}\ndescEN: {item.DescriptionEN}\ncount: {item.Count}\nprice: {item.Price}\ndiscountPrice: {item.DiscountPrice}\ncategory: {name}\n", item.Image);
+                        }
+                        else
+                        {
+                            await BotSendModel.SendTextAsync(botClient, chatId, cancellationToken, $"Id: {item.Id}\nnameRU: {item.Name}\nnameUA: {item.NameUA}\nnameEN: {item.NameEN}\ndescRU: {item.Description}\ndescUA: {item.DescriptionUA}\ndescEN: {item.DescriptionEN}\ncount: {item.Count}\nprice: {item.Price}\ndiscountPrice: {item.DiscountPrice}\ncategory: {name}\n");
+                        }
                     }
                 }
+                else
+                {
+                    await BotSendModel.SendTextAsync(botClient, chatId, cancellationToken, $"Список продуктов пуст!😢");
+                }
+
             }
-            else
+            catch (Exception ex)
             {
-                await BotSendModel.SendTextAsync(botClient, chatId, cancellationToken, $"Список продуктов пуст!😢");
+                await BotSendModel.SendTextAsync(botClient, chatId, cancellationToken, $"Что то пошло не так... Проверь правильность написания тегов😢");
             }
         }
 
@@ -454,9 +470,9 @@ namespace HomeGardenShopAdmin.BotModels
                     string? descRes = messageText.Split(';').FirstOrDefault(x => x.Contains("descRU"));
                     string? descResUA = messageText.Split(';').FirstOrDefault(x => x.Contains("descUA"));
                     string? descResEN = messageText.Split(';').FirstOrDefault(x => x.Contains("descEN"));
-                    string? priceRes = messageText.Split(';').FirstOrDefault(x => x.Contains("price"));
-                    string? discountPriceRes = messageText.Split(';').FirstOrDefault(x => x.Contains("discountPrice"));
-                    string? countRes = messageText.Split(';').FirstOrDefault(x => x.Contains("count"));
+                    string? priceRes = messageText.Split(';').FirstOrDefault(x => x.Contains("prodprice"));
+                    string? discountPriceRes = messageText.Split(';').FirstOrDefault(x => x.Contains("proddiscount"));
+                    string? countRes = messageText.Split(';').FirstOrDefault(x => x.Contains("prodcount"));
                     string? categoryIdRes = messageText.Split(';').FirstOrDefault(x => x.Contains("categoryId"));
 
 
@@ -492,17 +508,17 @@ namespace HomeGardenShopAdmin.BotModels
                     }
                     if (priceRes != null)
                     {
-                        string price = priceRes.Split("price:").Last();
+                        string price = priceRes.Split("prodprice:").Last();
                         item.Price = Convert.ToDouble(price);
                     }
                     if (discountPriceRes != null)
                     {
-                        string discountPrice = discountPriceRes.Split("discountPrice:").Last();
+                        string discountPrice = discountPriceRes.Split("proddiscount:").Last();
                         item.DiscountPrice = Convert.ToDouble(discountPrice);
                     }
                     if (countRes != null)
                     {
-                        string count = countRes.Split("count:").Last();
+                        string count = countRes.Split("prodcount:").Last();
                         item.Count = Convert.ToDouble(count);
                     }
                     if (categoryIdRes != null)
